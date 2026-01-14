@@ -4,9 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-black: var(--black);
+  --color-white: var(--white);
   --color-purple: var(--purple);
   --color-purple-hover: var(--purple-hover);
-  --color-very-dark-grey: var(--dark-grey);
+  --color-very-dark-grey: var(--very-dark-grey);
   --color-dark-grey: var(--dark-grey);
   --color-medium-grey: var(--medium-grey);
   --color-light-grey: var(--light-grey);
@@ -120,7 +122,7 @@
 
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: hsl(235, 12%, 19%);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -141,7 +143,7 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: hsl(235, 12%, 19%);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);

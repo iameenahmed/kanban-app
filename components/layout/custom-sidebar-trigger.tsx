@@ -12,7 +12,7 @@ export const CustomSidebarTrigger = () => {
       <Button
         variant="ghost"
         asChild
-        className="text-medium-grey hover:bg-purple/10 hover:text-purple cursor-pointer rounded-l-none rounded-r-full border-0"
+        className="text-medium-grey hover:bg-purple/10 hover:text-purple cursor-pointer rounded-l-none rounded-r-full border-0 dark:hover:bg-white"
         onClick={toggleSidebar}
       >
         {open ? (
@@ -21,7 +21,7 @@ export const CustomSidebarTrigger = () => {
             <span>Hide Sidebar</span>
           </div>
         ) : (
-          <div className="bg-purple hover:bg-purple-hover w-14 text-white">
+          <div className="bg-purple hover:bg-purple-hover w-14 text-white dark:hover:bg-white">
             <EyeIcon className="h-4 w-4.5" />
             <span className="sr-only">Show Sidebar</span>
           </div>

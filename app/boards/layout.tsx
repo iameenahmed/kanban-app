@@ -20,9 +20,9 @@ export default async function DashboardLayout({
     >
       <CustomSidebarTrigger />
       <AppSidebar />
-      <div className="bg-light-grey w-full">
+      <div className="bg-light-grey dark:bg-very-dark-grey w-full">
         <BoardHeader />
-        <main>{children}</main>
+        {children}
       </div>
     </SidebarProvider>
   );

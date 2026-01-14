@@ -21,7 +21,7 @@ export const BoardHeader = () => {
   const { isMobile, toggleSidebar } = useSidebar();
 
   return (
-    <div className="flex h-16 w-full items-center justify-between bg-white pl-3 md:h-20 md:*:px-6">
+    <div className="dark:bg-dark-grey flex h-16 w-full items-center justify-between bg-white pl-3 md:h-20 md:px-6">
       <div className="flex items-center">
         <Image
           className="mr-3 md:hidden"
@@ -37,7 +37,7 @@ export const BoardHeader = () => {
           aria-hidden={!isMobile}
           className="flex items-center gap-1"
         >
-          <h1 className="text-lg md:text-2xl">{selectedBoard}</h1>
+          <h1 className="text-lg md:text-xl">{selectedBoard}</h1>
           <ChevronDown className="text-purple size-4 font-bold md:hidden" />
         </button>
       </div>
@@ -57,17 +57,20 @@ export const BoardHeader = () => {
               <MoreVerticalIcon className="size-5 md:size-6" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="h-24 w-48 p-4 md:mt-3" align="end">
+          <DropdownMenuContent
+            className="dark:bg-very-dark-grey h-24 w-48 border-0 p-4 md:mt-2.5"
+            align="end"
+          >
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onSelect={() => {}}
-                className="text-medium-grey cursor-pointer font-medium"
+                className="text-medium-grey cursor-pointer font-medium focus:bg-transparent"
               >
                 Edit Board
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {}}
-                className="text-red focus:text-red-hover cursor-pointer font-medium"
+                className="text-red focus:text-red-hover cursor-pointer font-medium focus:bg-transparent"
               >
                 Delete Board
               </DropdownMenuItem>

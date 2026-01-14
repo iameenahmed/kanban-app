@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -20,7 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${jakartaSans.variable} font-bold antialiased`}>
-        <main>{children}</main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   );
