@@ -14,7 +14,10 @@ export default async function DashboardLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
+    <SidebarProvider
+      defaultOpen={defaultOpen}
+      className="[--sidebar-width:16.25rem] lg:[--sidebar-width:18.75rem]"
+    >
       <CustomSidebarTrigger />
       <AppSidebar />
       <div className="bg-light-grey w-full">

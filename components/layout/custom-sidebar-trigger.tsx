@@ -8,7 +8,7 @@ export const CustomSidebarTrigger = () => {
   const { open, toggleSidebar } = useSidebar();
 
   return (
-    <div className="absolute bottom-8 left-0 z-100">
+    <div className="absolute bottom-8 left-0 z-100 hidden md:block">
       <Button
         variant="ghost"
         asChild

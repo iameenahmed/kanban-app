@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { PlusIcon, MoreVerticalIcon } from "lucide-react";
+import { PlusIcon, MoreVerticalIcon, ChevronDown } from "lucide-react";
 
 import { slugToName } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,18 +13,38 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export const BoardHeader = () => {
   const pathname = usePathname();
   const selectedBoard = slugToName(pathname.split("/")[2]);
+  const { isMobile, toggleSidebar } = useSidebar();
 
   return (
-    <div className="flex h-20 w-full items-center justify-between bg-white px-6">
-      <h1 className="text-2xl">{selectedBoard}</h1>
-      <div className="flex items-center gap-3">
-        <Button className="w-41 rounded-full font-bold">
+    <div className="flex h-16 w-full items-center justify-between bg-white pl-3 md:h-20 md:*:px-6">
+      <div className="flex items-center">
+        <Image
+          className="mr-3 md:hidden"
+          src="/logo-mobile.svg"
+          alt="kanban logo"
+          width={24}
+          height={25}
+        />
+        <button
+          onClick={toggleSidebar}
+          disabled={!isMobile}
+          aria-label="open sidebar"
+          aria-hidden={!isMobile}
+          className="flex items-center gap-1"
+        >
+          <h1 className="text-lg md:text-2xl">{selectedBoard}</h1>
+          <ChevronDown className="text-purple size-4 font-bold md:hidden" />
+        </button>
+      </div>
+      <div className="flex items-center md:gap-3">
+        <Button className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41">
           <PlusIcon />
-          <span>Add New Task</span>
+          <span className="hidden md:block">Add New Task</span>
         </Button>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
@@ -33,10 +54,10 @@ export const BoardHeader = () => {
               aria-label="Open menu"
               className="rounded-full"
             >
-              <MoreVerticalIcon className="size-6" />
+              <MoreVerticalIcon className="size-5 md:size-6" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mt-3 h-24 w-48 p-4" align="end">
+          <DropdownMenuContent className="h-24 w-48 p-4 md:mt-3" align="end">
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onSelect={() => {}}

@@ -26,7 +26,7 @@ export const BoardsList = ({ boards }: { boards: Board[] }) => {
 
   return (
     <SidebarGroup className="p-0 pr-6">
-      <SidebarGroupLabel className="text-medium-grey pl-6 text-xs">
+      <SidebarGroupLabel className="text-medium-grey pl-6 text-xs font-bold">
         {`ALL BOARDS (${boards?.length || 0})`}
       </SidebarGroupLabel>
       <SidebarGroupContent className="mt-2">

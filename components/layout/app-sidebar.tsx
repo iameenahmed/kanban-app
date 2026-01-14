@@ -18,14 +18,14 @@ export const AppSidebar = async () => {
   const boards = await fetchBoards();
 
   return (
-    <Sidebar className="bg-white">
-      <SidebarHeader className="bg-white p-6">
+    <Sidebar>
+      <SidebarHeader className="p-6">
         <Image src="/logo-dark.svg" alt="Kanban" width={153} height={26} />
       </SidebarHeader>
-      <SidebarContent className="bg-white pt-4">
+      <SidebarContent className="pt-4">
         <BoardsList boards={boards} />
       </SidebarContent>
-      <SidebarFooter className="absolute bottom-20 w-full bg-white">
+      <SidebarFooter className="mb-6 w-full md:mb-20">
         <Button
           className="text-medium-grey bg-light-grey hover:bg-light-grey mx-4"
           asChild
