@@ -78,10 +78,13 @@ export const editBoard = async (
     return { error: "Invalid form data" };
   }
 
+  const slug = nameToSlug(values.board_name);
+
   try {
     await updateBoard(
       values.board_id,
       result.data.board_name,
+      slug,
       result.data.columns,
     );
   } catch (e) {
@@ -89,7 +92,6 @@ export const editBoard = async (
     return { error: "Database failure. Please try again." };
   }
 
-  const slug = nameToSlug(values.board_name);
   revalidatePath(`/boards/${slug}`);
   return { success: true, slug };
 };

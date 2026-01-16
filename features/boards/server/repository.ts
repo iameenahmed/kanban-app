@@ -52,12 +52,13 @@ export async function getBoardBySlug(userId: string, slug: string) {
 export async function updateBoard(
   board_id: string,
   name: string,
+  slug: string,
   columns: { id?: string; title: string }[],
 ) {
   return await prisma.$transaction(async (tx) => {
     const board = await tx.board.update({
       where: { id: board_id },
-      data: { name },
+      data: { name, slug },
     });
 
     const existingColumns = columns.filter((c) => c.id);
