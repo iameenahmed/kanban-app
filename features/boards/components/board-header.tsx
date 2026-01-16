@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { PlusIcon, MoreVerticalIcon, ChevronDown } from "lucide-react";
 
-import { slugToName } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,9 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 
+import { slugToName } from "../utils";
+
 export const BoardHeader = () => {
+  const router = useRouter();
   const pathname = usePathname();
-  const selectedBoard = slugToName(pathname.split("/")[2]);
+  const segment = pathname.split("/")[2];
+  const selectedBoard = segment === "new" ? " " : slugToName(segment || "");
+
   const { isMobile, toggleSidebar } = useSidebar();
 
   return (
@@ -63,12 +67,14 @@ export const BoardHeader = () => {
           >
             <DropdownMenuGroup>
               <DropdownMenuItem
-                onSelect={() => {}}
+                disabled={!segment}
+                onSelect={() => router.push(`/boards/${segment}/edit`)}
                 className="text-medium-grey cursor-pointer font-medium focus:bg-transparent"
               >
                 Edit Board
               </DropdownMenuItem>
               <DropdownMenuItem
+                disabled={!segment}
                 onSelect={() => {}}
                 className="text-red focus:text-red-hover cursor-pointer font-medium focus:bg-transparent"
               >
