@@ -25,13 +25,19 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 import { BoardFormSchema, BoardFormSchemaTypes } from "../schema";
-import { createBoard } from "../server/actions";
+import { createBoard, editBoard } from "../server/actions";
 
 type BoardDialogProps = {
   isEditing?: boolean;
+  board?: {
+    id: string;
+    name: string;
+    userId: string;
+    columns: { id?: string; title: string }[];
+  } | null;
 };
 
-export const BoardDialog = ({ isEditing = false }: BoardDialogProps) => {
+export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
   const router = useRouter();
 
   const [error, setError] = useState<string | undefined>();
@@ -39,11 +45,11 @@ export const BoardDialog = ({ isEditing = false }: BoardDialogProps) => {
   const form = useForm<BoardFormSchemaTypes>({
     resolver: zodResolver(BoardFormSchema),
     defaultValues: {
-      board_name: "",
-      columns: [
-        { column_title: "Todo" },
-        { column_title: "Doing" },
-        { column_title: "Done" },
+      board_name: board?.name || "",
+      columns: board?.columns || [
+        { title: "Todo" },
+        { title: "Doing" },
+        { title: "Done" },
       ],
     },
   });
@@ -54,7 +60,14 @@ export const BoardDialog = ({ isEditing = false }: BoardDialogProps) => {
   });
 
   const onSubmit = async (values: BoardFormSchemaTypes) => {
-    const res = await createBoard(values);
+    const res =
+      isEditing && board
+        ? await editBoard({
+            ...values,
+            board_id: board.id,
+            userId: board.userId,
+          })
+        : await createBoard(values);
 
     if (res.error) {
       setError(res.error);
@@ -93,7 +106,7 @@ export const BoardDialog = ({ isEditing = false }: BoardDialogProps) => {
                 <div key={field.id} className="flex w-full items-center gap-2">
                   <FormField
                     control={form.control}
-                    name={`columns.${index}.column_title`}
+                    name={`columns.${index}.title`}
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
@@ -129,7 +142,7 @@ export const BoardDialog = ({ isEditing = false }: BoardDialogProps) => {
               <Button
                 variant="secondary"
                 className="rounded-full text-sm font-bold"
-                onClick={() => append({ column_title: "" })}
+                onClick={() => append({ title: "" })}
               >
                 <PlusIcon className="size-4" />
                 Add New Column

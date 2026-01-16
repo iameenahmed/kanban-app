@@ -11,16 +11,3 @@ export const nameToSlug = (name: string) => {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 };
-
-export const prepareBoardData = (
-  board_name: string,
-  columns: { column_title: string }[],
-) => {
-  return {
-    slug: nameToSlug(board_name),
-    columnsWithPositions: columns.map((col, index) => ({
-      title: col.column_title,
-      position: index,
-    })),
-  };
-};

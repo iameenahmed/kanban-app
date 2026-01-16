@@ -3,10 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/features/auth/actions";
 
-import { canCreateBoard, canReadBoards } from "./policy";
-import { createBoardWithColumns, getBoardsByUserId } from "./repository";
+import { canCreateBoard, canEditBoard, canReadBoards } from "./policy";
+import {
+  createBoardWithColumns,
+  getBoardBySlug,
+  getBoardsByUserId,
+  updateBoard,
+} from "./repository";
 import { BoardFormSchemaTypes, BoardFormSchema } from "../schema";
-import { prepareBoardData } from "../utils";
+import { nameToSlug } from "../utils";
 
 export const fetchBoards = async () => {
   const user = await getCurrentUser();
@@ -30,20 +35,55 @@ export const createBoard = async (values: BoardFormSchemaTypes) => {
     return { error: "Invalid form data" };
   }
   const { board_name, columns } = result.data;
-  const { slug, columnsWithPositions } = prepareBoardData(board_name, columns);
+  const slug = nameToSlug(board_name);
 
   try {
-    await createBoardWithColumns(
-      board_name,
-      slug,
-      user.id,
-      columnsWithPositions,
-    );
+    await createBoardWithColumns(board_name, slug, user.id, columns);
   } catch (e) {
     console.log(e);
     return { error: "Database failure. Please try again." };
   }
 
   revalidatePath("/boards");
+  return { success: true, slug };
+};
+
+export const fetchBoardBySlug = async (slug: string) => {
+  const user = await getCurrentUser();
+
+  if (!user || !canReadBoards(user.id)) {
+    throw new Error("Unauthorized");
+  }
+
+  return await getBoardBySlug(user.id, slug);
+};
+
+export const editBoard = async (
+  values: { board_id: string; userId: string } & BoardFormSchemaTypes,
+) => {
+  const user = await getCurrentUser();
+
+  if (!user || !canEditBoard(user.id, values.userId)) {
+    throw new Error("Unauthorized");
+  }
+
+  const result = BoardFormSchema.safeParse(values);
+  if (!result.success) {
+    return { error: "Invalid form data" };
+  }
+
+  try {
+    await updateBoard(
+      values.board_id,
+      result.data.board_name,
+      result.data.columns,
+    );
+  } catch (e) {
+    console.log(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  const slug = nameToSlug(values.board_name);
+  revalidatePath(`/boards/${slug}`);
   return { success: true, slug };
 };
