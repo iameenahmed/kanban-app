@@ -10,3 +10,27 @@ export async function getBoardsByUserId(userId: string) {
     },
   });
 }
+
+export async function createBoardWithColumns(
+  board_name: string,
+  slug: string,
+  userId: string,
+  columns: {
+    title: string;
+    position: number;
+  }[],
+) {
+  return await prisma.board.create({
+    data: {
+      name: board_name,
+      slug,
+      userId,
+      columns: {
+        create: columns.map((column) => ({
+          title: column.title,
+          position: column.position,
+        })),
+      },
+    },
+  });
+}
