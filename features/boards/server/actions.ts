@@ -3,12 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/features/auth/actions";
 
-import { canCreateBoard, canEditBoard, canReadBoards } from "./policy";
+import {
+  canCreateBoard,
+  canDeleteBoard,
+  canEditBoard,
+  canReadBoards,
+} from "./policy";
 import {
   createBoardWithColumns,
   getBoardBySlug,
   getBoardsByUserId,
   updateBoard,
+  deleteBoard,
 } from "./repository";
 import { BoardFormSchemaTypes, BoardFormSchema } from "../schema";
 import { nameToSlug } from "../utils";
@@ -86,4 +92,25 @@ export const editBoard = async (
   const slug = nameToSlug(values.board_name);
   revalidatePath(`/boards/${slug}`);
   return { success: true, slug };
+};
+
+export const deleteBoardBySlug = async (slug: string) => {
+  const user = await getCurrentUser();
+  const board = await fetchBoardBySlug(slug);
+
+  if (!board) throw new Error("Board Not found");
+
+  if (!user || !canDeleteBoard(user.id, board.userId)) {
+    throw new Error("Unauthorized");
+  }
+
+  try {
+    await deleteBoard(user.id, slug);
+  } catch (e) {
+    console.log(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  revalidatePath("/boards");
+  return { success: true };
 };

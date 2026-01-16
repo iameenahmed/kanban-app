@@ -15,6 +15,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 
 import { slugToName } from "../utils";
+import { deleteBoardBySlug } from "../server/actions";
 
 export const BoardHeader = () => {
   const router = useRouter();
@@ -23,6 +24,14 @@ export const BoardHeader = () => {
   const selectedBoard = segment === "new" ? " " : slugToName(segment || "");
 
   const { isMobile, toggleSidebar } = useSidebar();
+
+  const handleDelete = async () => {
+    const slug = segment === "new" ? " " : segment;
+    const res = await deleteBoardBySlug(slug);
+    if (res.success) {
+      router.push("/boards");
+    }
+  };
 
   return (
     <div className="dark:bg-dark-grey flex h-16 w-full items-center justify-between bg-white pl-3 md:h-20 md:px-6">
@@ -75,7 +84,7 @@ export const BoardHeader = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 disabled={!segment}
-                onSelect={() => {}}
+                onSelect={handleDelete}
                 className="text-red focus:text-red-hover cursor-pointer font-medium focus:bg-transparent"
               >
                 Delete Board

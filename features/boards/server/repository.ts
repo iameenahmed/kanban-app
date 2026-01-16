@@ -95,3 +95,9 @@ export async function updateBoard(
     return board;
   });
 }
+
+export async function deleteBoard(userId: string, slug: string) {
+  return await prisma.board.delete({
+    where: { userId_slug: { userId, slug } },
+  });
+}
