@@ -1,5 +1,4 @@
 import "dotenv/config";
-import { webcrypto } from "node:crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
 
@@ -7,7 +6,6 @@ const connectionString = `${process.env.DATABASE_URL}`;
 
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
-const genId = () => webcrypto.randomUUID();
 
 const data = {
   boards: [
@@ -482,7 +480,6 @@ async function main() {
     // 2. Seed Board
     const board = await prisma.board.create({
       data: {
-        id: genId(),
         name: b.name,
         slug: b.name.toLowerCase().replace(/\s+/g, "-"),
         userId: userId,
@@ -493,7 +490,6 @@ async function main() {
       // 3. Seed Column
       const column = await prisma.column.create({
         data: {
-          id: genId(),
           title: c.name,
           position: colIdx,
           boardId: board.id,
@@ -504,7 +500,6 @@ async function main() {
         // 4. Seed Task
         const task = await prisma.task.create({
           data: {
-            id: genId(),
             title: t.title,
             description: t.description || "",
             position: taskIdx,
@@ -516,7 +511,6 @@ async function main() {
         if (t.subtasks && t.subtasks.length > 0) {
           await prisma.subtask.createMany({
             data: t.subtasks.map((st) => ({
-              id: genId(),
               title: st.title,
               isCompleted: st.isCompleted,
               taskId: task.id,
