@@ -1,3 +1,5 @@
+// FIX: Special characters in slugs
+
 export const slugToName = (slug: string) => {
   return slug
     .split(/[-_]/)

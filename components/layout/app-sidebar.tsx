@@ -16,7 +16,8 @@ import { fetchBoards } from "@/features/boards/server/actions";
 import { ThemeToggle } from "./theme-toggle";
 
 export const AppSidebar = async () => {
-  const boards = await fetchBoards();
+  const result = await fetchBoards();
+  const boards = result.error ? [] : result.data || [];
 
   return (
     <Sidebar>

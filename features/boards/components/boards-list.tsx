@@ -14,11 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-type Board = {
-  id: string;
-  name: string;
-  slug: string;
-};
+import { Board } from "../types";
 
 export const BoardsList = ({ boards }: { boards: Board[] }) => {
   const pathname = usePathname();

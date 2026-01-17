@@ -7,7 +7,11 @@ interface EditBoardPageProps {
 
 export default async function EditBoardPage({ params }: EditBoardPageProps) {
   const { slug } = await params;
-  const board = await fetchBoardBySlug(slug);
+  const result = await fetchBoardBySlug(slug);
 
-  return <BoardDialog isEditing={true} board={board} />;
+  if (result.error || !result.data) {
+    return <div>Error: {result.error || "Board not found"}</div>;
+  }
+
+  return <BoardDialog isEditing={true} board={result.data} />;
 }

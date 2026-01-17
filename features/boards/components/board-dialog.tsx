@@ -26,15 +26,11 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 
 import { BoardFormSchema, BoardFormSchemaTypes } from "../schema";
 import { createBoard, editBoard } from "../server/actions";
+import { BoardWithColumns } from "../types";
 
 type BoardDialogProps = {
   isEditing?: boolean;
-  board?: {
-    id: string;
-    name: string;
-    userId: string;
-    columns: { id?: string; title: string }[];
-  } | null;
+  board?: BoardWithColumns | null;
 };
 
 export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
@@ -92,7 +88,7 @@ export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
               name="board_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-bold">Email</FormLabel>
+                  <FormLabel className="text-sm font-bold">Name</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="e.g. Web Design" />
                   </FormControl>
@@ -112,6 +108,7 @@ export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
                         <FormControl>
                           <Input {...field} placeholder="Stage name" />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
