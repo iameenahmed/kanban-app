@@ -8,6 +8,9 @@ export async function getBoardsByUserId(userId: string) {
       name: true,
       slug: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 
@@ -56,7 +59,7 @@ export async function updateBoard(
   columns: { id?: string; title: string }[],
 ) {
   return await prisma.$transaction(async (tx) => {
-    const board = await tx.board.update({
+    await tx.board.update({
       where: { id: board_id },
       data: { name, slug },
     });
@@ -92,8 +95,6 @@ export async function updateBoard(
         }),
       ),
     );
-
-    return board;
   });
 }
 

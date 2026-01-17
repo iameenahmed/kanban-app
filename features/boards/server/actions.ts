@@ -3,37 +3,32 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/features/auth/actions";
 
-import {
-  canCreateBoard,
-  canDeleteBoard,
-  canEditBoard,
-  canReadBoards,
-} from "./policy";
-import {
-  createBoardWithColumns,
-  getBoardBySlug,
-  getBoardsByUserId,
-  updateBoard,
-  deleteBoard,
-} from "./repository";
+import * as Policy from "./policy";
+import * as Repo from "./repository";
 import { BoardFormSchemaTypes, BoardFormSchema } from "../schema";
 import { nameToSlug } from "../utils";
 
 export const fetchBoards = async () => {
   const user = await getCurrentUser();
 
-  if (!user || !canReadBoards(user.id)) {
-    throw new Error("Unauthorized");
+  if (!user || !Policy.canReadBoards(user.id)) {
+    return { error: "Unauthorized" };
   }
 
-  return await getBoardsByUserId(user.id);
+  try {
+    const boards = await Repo.getBoardsByUserId(user.id);
+    return { data: boards };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to fetch boards. Please try again." };
+  }
 };
 
 export const createBoard = async (values: BoardFormSchemaTypes) => {
   const user = await getCurrentUser();
 
-  if (!user || !canCreateBoard(user.id)) {
-    throw new Error("Unauthorized");
+  if (!user || !Policy.canCreateBoard(user.id)) {
+    return { error: "Unauthorized" };
   }
 
   const result = BoardFormSchema.safeParse(values);
@@ -44,9 +39,9 @@ export const createBoard = async (values: BoardFormSchemaTypes) => {
   const slug = nameToSlug(board_name);
 
   try {
-    await createBoardWithColumns(board_name, slug, user.id, columns);
+    await Repo.createBoardWithColumns(board_name, slug, user.id, columns);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return { error: "Database failure. Please try again." };
   }
 
@@ -57,11 +52,20 @@ export const createBoard = async (values: BoardFormSchemaTypes) => {
 export const fetchBoardBySlug = async (slug: string) => {
   const user = await getCurrentUser();
 
-  if (!user || !canReadBoards(user.id)) {
-    throw new Error("Unauthorized");
+  if (!user || !Policy.canReadBoards(user.id)) {
+    return { error: "Unauthorized" };
   }
 
-  return await getBoardBySlug(user.id, slug);
+  try {
+    const board = await Repo.getBoardBySlug(user.id, slug);
+    if (!board) {
+      return { error: "Board not found" };
+    }
+    return { data: board };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to fetch board. Please try again." };
+  }
 };
 
 export const editBoard = async (
@@ -69,8 +73,8 @@ export const editBoard = async (
 ) => {
   const user = await getCurrentUser();
 
-  if (!user || !canEditBoard(user.id, values.userId)) {
-    throw new Error("Unauthorized");
+  if (!user || !Policy.canEditBoard(user.id, values.userId)) {
+    return { error: "Unauthorized" };
   }
 
   const result = BoardFormSchema.safeParse(values);
@@ -81,14 +85,14 @@ export const editBoard = async (
   const slug = nameToSlug(values.board_name);
 
   try {
-    await updateBoard(
+    await Repo.updateBoard(
       values.board_id,
       result.data.board_name,
       slug,
       result.data.columns,
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return { error: "Database failure. Please try again." };
   }
 
@@ -98,18 +102,20 @@ export const editBoard = async (
 
 export const deleteBoardBySlug = async (slug: string) => {
   const user = await getCurrentUser();
-  const board = await fetchBoardBySlug(slug);
+  const boardResult = await fetchBoardBySlug(slug);
 
-  if (!board) throw new Error("Board Not found");
+  if (boardResult.error || !boardResult.data) {
+    return { error: boardResult.error || "Board not found" };
+  }
 
-  if (!user || !canDeleteBoard(user.id, board.userId)) {
-    throw new Error("Unauthorized");
+  if (!user || !Policy.canDeleteBoard(user.id, boardResult.data.userId)) {
+    return { error: "Unauthorized" };
   }
 
   try {
-    await deleteBoard(user.id, slug);
+    await Repo.deleteBoard(user.id, slug);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return { error: "Database failure. Please try again." };
   }
 
