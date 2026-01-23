@@ -2,20 +2,14 @@
 
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { PlusIcon, MoreVerticalIcon, ChevronDown } from "lucide-react";
+import { PlusIcon, ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 
 import { slugToName } from "../utils";
 import { deleteBoardBySlug } from "../server/actions";
+import { BoardActionMenu } from "@/features/boards/components/board-action-menu";
 
 export const BoardHeader = () => {
   const router = useRouter();
@@ -59,39 +53,11 @@ export const BoardHeader = () => {
           <PlusIcon />
           <span className="hidden md:block">Add New Task</span>
         </Button>
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-lg"
-              aria-label="Open menu"
-              className="rounded-full"
-            >
-              <MoreVerticalIcon className="size-5 md:size-6" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="dark:bg-very-dark-grey h-24 w-48 border-0 p-4 md:mt-2.5"
-            align="end"
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                disabled={!segment}
-                onSelect={() => router.push(`/boards/${segment}/edit`)}
-                className="text-medium-grey cursor-pointer font-medium focus:bg-transparent"
-              >
-                Edit Board
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={!segment}
-                onSelect={handleDelete}
-                className="text-red focus:text-red-hover cursor-pointer font-medium focus:bg-transparent"
-              >
-                Delete Board
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <BoardActionMenu
+          selectedBoard={selectedBoard}
+          onDelete={handleDelete}
+          onEdit={() => router.push(`/boards/${segment}/edit`)}
+        />
       </div>
     </div>
   );
