@@ -33,7 +33,7 @@ export const BoardActionMenu = ({
   onDelete,
   onEdit,
 }: RowActionMenuProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState<boolean>();
   return (
     <>
       <DropdownMenu modal={false}>
