@@ -27,3 +27,13 @@ export async function getColumnsByBoard(userId: string, boardSlug: string) {
     orderBy: { position: "asc" },
   });
 }
+
+export async function getColumns(userId: string, boardSlug: string) {
+  return await prisma.column.findMany({
+    where: { board: { userId, slug: boardSlug } },
+    select: {
+      id: true,
+      title: true,
+    },
+  });
+}
