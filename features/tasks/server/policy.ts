@@ -2,14 +2,18 @@ export const canReadBoards = (userId: string) => {
   return !!userId;
 };
 
-export const canCreateBoard = (userId: string) => {
+export const canReadTask = (userId: string) => {
   return !!userId;
 };
 
-export const canEditBoard = (userId: string, taskUserId: string) => {
+export const canCreateTask = (userId: string) => {
+  return !!userId;
+};
+
+export const canEditTask = (userId: string, taskUserId: string) => {
   return userId === taskUserId;
 };
 
-export const canDeleteBoard = (userId: string, taskUserId: string) => {
+export const canDeleteTask = (userId: string, taskUserId: string) => {
   return userId === taskUserId;
 };

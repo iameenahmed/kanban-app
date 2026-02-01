@@ -37,3 +37,21 @@ export async function getColumns(userId: string, boardSlug: string) {
     },
   });
 }
+
+export async function getTaskById(id: string) {
+  return await prisma.task.findFirst({
+    where: { id },
+    select: {
+      title: true,
+      description: true,
+      columnId: true,
+      subtasks: {
+        select: {
+          id: true,
+          title: true,
+          isCompleted: true,
+        },
+      },
+    },
+  });
+}

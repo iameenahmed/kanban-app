@@ -36,3 +36,19 @@ export const fetchColumns = async (boardSlug: string) => {
     return { error: "Failed to fetch Columns. Please try again." };
   }
 };
+
+export const fetchTask = async (taskId: string) => {
+  const user = await getCurrentUser();
+
+  if (!user || !Policy.canReadTask(user.id)) {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const task = await Repo.getTaskById(taskId);
+    return { data: task };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to fetch Task. Please try again." };
+  }
+};
