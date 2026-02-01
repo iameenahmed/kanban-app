@@ -42,6 +42,7 @@ export async function getTaskById(id: string) {
   return await prisma.task.findFirst({
     where: { id },
     select: {
+      id: true,
       title: true,
       description: true,
       columnId: true,
@@ -53,5 +54,33 @@ export async function getTaskById(id: string) {
         },
       },
     },
+  });
+}
+
+export async function toggleCompletionStatus(
+  id: string,
+  userId: string,
+  isCompleted: boolean,
+) {
+  return await prisma.subtask.updateMany({
+    where: { id, task: { column: { board: { userId } } } },
+    data: { isCompleted },
+  });
+}
+
+export async function updateTaskColumn(
+  id: string,
+  userId: string,
+  columnId: string,
+) {
+  return await prisma.task.updateMany({
+    where: { id, column: { board: { userId } } },
+    data: { columnId },
+  });
+}
+
+export async function deleteTask(id: string, userId: string) {
+  return await prisma.task.deleteMany({
+    where: { id, column: { board: { userId } } },
   });
 }

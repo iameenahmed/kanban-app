@@ -52,3 +52,55 @@ export const fetchTask = async (taskId: string) => {
     return { error: "Failed to fetch Task. Please try again." };
   }
 };
+
+export const updateSubtaskCompletionStatus = async (
+  subtaskId: string,
+  isCompleted: boolean,
+) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const res = await Repo.toggleCompletionStatus(
+      subtaskId,
+      user.id,
+      isCompleted,
+    );
+    if (res.count === 0) return { error: "Failed to update." };
+  } catch (e) {
+    console.error(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  return { success: true };
+};
+
+export const updateTaskColumn = async (taskId: string, columnId: string) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const res = await Repo.updateTaskColumn(taskId, user.id, columnId);
+    if (res.count === 0) return { error: "Failed to update." };
+  } catch (e) {
+    console.error(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  return { success: true };
+};
+
+export const deleteTask = async (taskId: string) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const res = await Repo.deleteTask(taskId, user.id);
+    if (res.count === 0) return { error: "Failed to delete." };
+  } catch (e) {
+    console.error(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  return { success: true };
+};

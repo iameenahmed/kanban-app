@@ -12,7 +12,7 @@ export type SubTask = {
 export type TaskWithSubtasks = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   columnId: string;
   subtasks: SubTask[];
 };
