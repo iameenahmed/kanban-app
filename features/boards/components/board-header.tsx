@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { PlusIcon, ChevronDown } from "lucide-react";
@@ -49,9 +50,14 @@ export const BoardHeader = () => {
         </button>
       </div>
       <div className="flex items-center md:gap-3">
-        <Button className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41">
-          <PlusIcon />
-          <span className="hidden md:block">Add New Task</span>
+        <Button
+          className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41"
+          asChild
+        >
+          <Link href={`/boards/${segment}?task=new`}>
+            <PlusIcon />
+            <span className="hidden md:block">Add New Task</span>
+          </Link>
         </Button>
         <BoardActionMenu
           selectedBoard={selectedBoard}
