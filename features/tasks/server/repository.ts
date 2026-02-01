@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { TaskWithSubtasks } from "../types";
+import { TaskFormSchemaTypes } from "../schema";
 
 export async function getColumnsByBoard(userId: string, boardSlug: string) {
   return await prisma.column.findMany({
@@ -58,7 +58,7 @@ export async function getTaskById(id: string) {
   });
 }
 
-export async function createTaskWitSubtasks(data: TaskWithSubtasks) {
+export async function createTaskWitSubtasks(data: TaskFormSchemaTypes) {
   const { title, description, columnId, subtasks } = data;
 
   // Fetch the current maximum position in the column.
@@ -84,6 +84,58 @@ export async function createTaskWitSubtasks(data: TaskWithSubtasks) {
         },
       },
     },
+  });
+}
+
+export async function updateTaskWithSubtasks(
+  data: TaskFormSchemaTypes,
+  taskId: string,
+  userId: string,
+) {
+  const { title, description, columnId, subtasks } = data;
+
+  return prisma.$transaction(async (tx) => {
+    await tx.task.updateMany({
+      where: {
+        id: taskId,
+        column: { board: { userId } },
+      },
+      data: {
+        title,
+        description,
+        columnId,
+      },
+    });
+
+    const existingSubtasks = subtasks.filter((s) => s.id);
+    const newSubtasks = subtasks.filter((s) => !s.id);
+    const existingIds = existingSubtasks.map((s) => s.id!);
+
+    await tx.subtask.deleteMany({
+      where: {
+        taskId,
+        task: { column: { board: { userId } } },
+        id: { notIn: existingIds },
+      },
+    });
+
+    if (newSubtasks.length) {
+      await tx.subtask.createMany({
+        data: newSubtasks.map(({ title }) => ({
+          title,
+          taskId,
+        })),
+      });
+    }
+
+    await Promise.all(
+      existingSubtasks.map(({ id, title }) =>
+        tx.subtask.update({
+          where: { id, task: { column: { board: { userId } } } },
+          data: { title },
+        }),
+      ),
+    );
   });
 }
 

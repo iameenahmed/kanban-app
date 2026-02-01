@@ -35,7 +35,10 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 
 import { TaskFormSchema, TaskFormSchemaTypes } from "../schema";
 import { TaskWithSubtasks, Column } from "../types";
-import { createTaskWithSubtasks } from "../server/actions";
+import {
+  createTaskWithSubtasks,
+  editTaskWithSubtasks,
+} from "../server/actions";
 
 type TaskFormProps = {
   isEditing: boolean;
@@ -63,12 +66,16 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
   });
 
   const onSubmit = async (values: TaskFormSchemaTypes) => {
-    const res = await createTaskWithSubtasks(values);
+    const res =
+      isEditing && task
+        ? await editTaskWithSubtasks(values, task.id!)
+        : await createTaskWithSubtasks(values);
     if (res.error) {
       setError(res.error);
     }
     if (res.success) {
       router.back();
+      router.refresh();
     }
   };
 
@@ -155,13 +162,6 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
               ))}
             </div>
 
-            {!!error && (
-              <Alert variant="destructive">
-                <TriangleAlertIcon />
-                <AlertTitle>{error}</AlertTitle>
-              </Alert>
-            )}
-
             <Button
               variant="secondary"
               className="w-full rounded-full text-sm font-bold"
@@ -203,6 +203,13 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
                 </FormItem>
               )}
             />
+
+            {!!error && (
+              <Alert variant="destructive">
+                <TriangleAlertIcon />
+                <AlertTitle>{error}</AlertTitle>
+              </Alert>
+            )}
 
             <Button type="submit" className="w-full rounded-full">
               {isEditing ? "Save Changes" : "Create New Task"}

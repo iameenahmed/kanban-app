@@ -23,6 +23,25 @@ export const fetchColumnsWithTasks = async (boardSlug: string) => {
   }
 };
 
+export const editTaskWithSubtasks = async (
+  data: TaskWithSubtasks,
+  taskId: string,
+) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const validatedData = TaskFormSchema.safeParse(data);
+  if (!validatedData.success) return { error: "Invalid Data" };
+
+  try {
+    await Repo.updateTaskWithSubtasks(validatedData.data, taskId, user.id);
+    return { success: true };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to Update Task. Please try again." };
+  }
+};
+
 export const fetchColumns = async (boardSlug: string) => {
   const user = await getCurrentUser();
 
