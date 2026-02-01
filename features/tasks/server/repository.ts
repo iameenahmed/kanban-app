@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { TaskWithSubtasks } from "../types";
 
 export async function getColumnsByBoard(userId: string, boardSlug: string) {
   return await prisma.column.findMany({
@@ -51,6 +52,35 @@ export async function getTaskById(id: string) {
           id: true,
           title: true,
           isCompleted: true,
+        },
+      },
+    },
+  });
+}
+
+export async function createTaskWitSubtasks(data: TaskWithSubtasks) {
+  const { title, description, columnId, subtasks } = data;
+
+  // Fetch the current maximum position in the column.
+  const maxPos = await prisma.task.aggregate({
+    where: { columnId },
+    _max: { position: true },
+  });
+
+  //	Set the new task’s position to max + 1
+  const position = (maxPos._max.position ?? 0) + 1;
+
+  return await prisma.task.create({
+    data: {
+      title,
+      description,
+      position,
+      columnId,
+      subtasks: {
+        createMany: {
+          data: subtasks.map(({ title }) => ({
+            title,
+          })),
         },
       },
     },

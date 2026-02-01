@@ -4,15 +4,15 @@ export type Column = {
 };
 
 export type SubTask = {
-  id: string;
+  id?: string;
   title: string;
-  isCompleted: boolean;
+  isCompleted?: boolean;
 };
 
 export type TaskWithSubtasks = {
-  id: string;
+  id?: string;
   title: string;
-  description: string | null;
+  description?: string | undefined;
   columnId: string;
   subtasks: SubTask[];
 };

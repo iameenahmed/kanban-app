@@ -35,6 +35,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 
 import { TaskFormSchema, TaskFormSchemaTypes } from "../schema";
 import { TaskWithSubtasks, Column } from "../types";
+import { createTaskWithSubtasks } from "../server/actions";
 
 type TaskFormProps = {
   isEditing: boolean;
@@ -61,13 +62,19 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
     name: "subtasks",
   });
 
-  const onSubmit = async (values: unknown) => {
-    console.log(values);
+  const onSubmit = async (values: TaskFormSchemaTypes) => {
+    const res = await createTaskWithSubtasks(values);
+    if (res.error) {
+      setError(res.error);
+    }
+    if (res.success) {
+      router.back();
+    }
   };
 
   return (
     <Dialog open onOpenChange={() => router.back()}>
-      <DialogContent className="border-0" showCloseButton={false}>
+      <DialogContent className="gap-y-6 border-0" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Task" : "Add New Task"}</DialogTitle>
         </DialogHeader>
@@ -78,9 +85,15 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-bold">Title</FormLabel>
+                  <FormLabel className="text-medium-grey text-sm font-bold">
+                    Title
+                  </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g. Take coffee break" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. Take coffee break"
+                      className="placeholder:text-medium-grey text-sm font-medium"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -92,18 +105,22 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-bold">
+                  <FormLabel className="text-medium-grey text-sm font-bold">
                     Description
                   </FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="e.g. Take coffee break" />
+                    <Textarea
+                      {...field}
+                      placeholder="e.g. It's always good to take a break"
+                      className="placeholder:text-medium-grey text-sm font-medium"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div>
-              <div className="text-sm">Subtasks</div>
+              <div className="text-medium-grey text-sm font-bold">Subtasks</div>
               {fields.map((field, index) => (
                 <div key={field.id} className="flex w-full items-center gap-2">
                   <FormField
@@ -112,7 +129,11 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
-                          <Input {...field} placeholder="e.g. Make coffee" />
+                          <Input
+                            {...field}
+                            placeholder="e.g. Make coffee"
+                            className="placeholder:text-medium-grey text-sm font-medium"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -155,9 +176,15 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
               name="columnId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-bold">Status</FormLabel>
+                  <FormLabel className="text-medium-grey text-sm font-bold">
+                    Status
+                  </FormLabel>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      {...field}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a status" />
                       </SelectTrigger>

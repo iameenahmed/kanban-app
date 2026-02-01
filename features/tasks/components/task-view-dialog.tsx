@@ -102,7 +102,7 @@ export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
                       id={id}
                       checked={isCompleted}
                       onCheckedChange={() =>
-                        handleCheckedChange(id, !isCompleted)
+                        handleCheckedChange(id!, !isCompleted)
                       }
                     />
                     <FieldLabel
@@ -127,7 +127,7 @@ export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
             <Select
               defaultValue={task.columnId}
               onValueChange={(columnId) =>
-                handleColumnChange(task.id, columnId)
+                handleColumnChange(task.id!, columnId)
               }
             >
               <SelectTrigger className="w-full">
