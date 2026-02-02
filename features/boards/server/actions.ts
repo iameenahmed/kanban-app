@@ -3,17 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/features/auth/actions";
 
-import * as Policy from "./policy";
 import * as Repo from "./repository";
 import { BoardFormSchemaTypes, BoardFormSchema } from "../schema";
 import { nameToSlug } from "../utils";
 
 export const fetchBoards = async () => {
   const user = await getCurrentUser();
-
-  if (!user || !Policy.canReadBoards(user.id)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   try {
     const boards = await Repo.getBoardsByUserId(user.id);
@@ -26,15 +22,11 @@ export const fetchBoards = async () => {
 
 export const createBoard = async (values: BoardFormSchemaTypes) => {
   const user = await getCurrentUser();
-
-  if (!user || !Policy.canCreateBoard(user.id)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   const result = BoardFormSchema.safeParse(values);
-  if (!result.success) {
-    return { error: "Invalid form data" };
-  }
+  if (!result.success) return { error: "Invalid form data" };
+
   const { board_name, columns } = result.data;
   const slug = nameToSlug(board_name);
 
@@ -51,10 +43,7 @@ export const createBoard = async (values: BoardFormSchemaTypes) => {
 
 export const fetchBoardBySlug = async (slug: string) => {
   const user = await getCurrentUser();
-
-  if (!user || !Policy.canReadBoards(user.id)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   try {
     const board = await Repo.getBoardBySlug(user.id, slug);
@@ -72,21 +61,17 @@ export const editBoard = async (
   values: { board_id: string; userId: string } & BoardFormSchemaTypes,
 ) => {
   const user = await getCurrentUser();
-
-  if (!user || !Policy.canEditBoard(user.id, values.userId)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   const result = BoardFormSchema.safeParse(values);
-  if (!result.success) {
-    return { error: "Invalid form data" };
-  }
+  if (!result.success) return { error: "Invalid form data" };
 
   const slug = nameToSlug(values.board_name);
 
   try {
     await Repo.updateBoard(
       values.board_id,
+      user.id,
       result.data.board_name,
       slug,
       result.data.columns,
@@ -102,15 +87,7 @@ export const editBoard = async (
 
 export const deleteBoardBySlug = async (slug: string) => {
   const user = await getCurrentUser();
-  const boardResult = await fetchBoardBySlug(slug);
-
-  if (boardResult.error || !boardResult.data) {
-    return { error: boardResult.error || "Board not found" };
-  }
-
-  if (!user || !Policy.canDeleteBoard(user.id, boardResult.data.userId)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   try {
     await Repo.deleteBoard(user.id, slug);

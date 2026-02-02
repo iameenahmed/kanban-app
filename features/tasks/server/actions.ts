@@ -2,17 +2,13 @@
 
 import { getCurrentUser } from "@/features/auth/actions";
 
-import * as Policy from "./policy";
 import * as Repo from "./repository";
 import { TaskWithSubtasks } from "../types";
 import { TaskFormSchema } from "../schema";
 
 export const fetchColumnsWithTasks = async (boardSlug: string) => {
   const user = await getCurrentUser();
-
-  if (!user || !Policy.canReadBoards(user.id)) {
-    return { error: "Unauthorized" };
-  }
+  if (!user) return { error: "Unauthorized" };
 
   try {
     const columns = await Repo.getColumnsByBoard(user.id, boardSlug);
@@ -20,6 +16,48 @@ export const fetchColumnsWithTasks = async (boardSlug: string) => {
   } catch (e) {
     console.error(e);
     return { error: "Failed to fetch Columns. Please try again." };
+  }
+};
+
+export const fetchColumns = async (boardSlug: string) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const columns = await Repo.getColumns(user.id, boardSlug);
+    return { data: columns };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to fetch Columns. Please try again." };
+  }
+};
+
+export const fetchTask = async (taskId: string) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const task = await Repo.getTaskById(taskId, user.id);
+    return { data: task };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to fetch Task. Please try again." };
+  }
+};
+
+export const createTaskWithSubtasks = async (data: TaskWithSubtasks) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const validatedData = TaskFormSchema.safeParse(data);
+  if (!validatedData.success) return { error: "Invalid Data" };
+
+  try {
+    await Repo.createTaskWitSubtasks(validatedData.data);
+    return { success: true };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to Create Task. Please try again." };
   }
 };
 
@@ -39,59 +77,6 @@ export const editTaskWithSubtasks = async (
   } catch (e) {
     console.error(e);
     return { error: "Failed to Update Task. Please try again." };
-  }
-};
-
-export const fetchColumns = async (boardSlug: string) => {
-  const user = await getCurrentUser();
-
-  if (!user || !Policy.canReadBoards(user.id)) {
-    return { error: "Unauthorized" };
-  }
-
-  try {
-    const columns = await Repo.getColumns(user.id, boardSlug);
-    return { data: columns };
-  } catch (e) {
-    console.error(e);
-    return { error: "Failed to fetch Columns. Please try again." };
-  }
-};
-
-export const fetchTask = async (taskId: string) => {
-  const user = await getCurrentUser();
-
-  if (!user || !Policy.canReadTask(user.id)) {
-    return { error: "Unauthorized" };
-  }
-
-  try {
-    const task = await Repo.getTaskById(taskId);
-    return { data: task };
-  } catch (e) {
-    console.error(e);
-    return { error: "Failed to fetch Task. Please try again." };
-  }
-};
-
-export const createTaskWithSubtasks = async (data: TaskWithSubtasks) => {
-  const user = await getCurrentUser();
-
-  if (!user || !Policy.canCreateTask(user.id)) {
-    return { error: "Unauthorized" };
-  }
-
-  const validatedData = TaskFormSchema.safeParse(data);
-  if (!validatedData.success) {
-    return { error: "Invalid Data" };
-  }
-
-  try {
-    await Repo.createTaskWitSubtasks(validatedData.data);
-    return { success: true };
-  } catch (e) {
-    console.error(e);
-    return { error: "Failed to Create Task. Please try again." };
   }
 };
 

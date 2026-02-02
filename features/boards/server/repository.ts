@@ -54,13 +54,14 @@ export async function getBoardBySlug(userId: string, slug: string) {
 
 export async function updateBoard(
   board_id: string,
+  userId: string,
   name: string,
   slug: string,
   columns: { id?: string; title: string }[],
 ) {
   return await prisma.$transaction(async (tx) => {
     await tx.board.update({
-      where: { id: board_id },
+      where: { id: board_id, userId },
       data: { name, slug },
     });
 

@@ -39,9 +39,9 @@ export async function getColumns(userId: string, boardSlug: string) {
   });
 }
 
-export async function getTaskById(id: string) {
+export async function getTaskById(id: string, userId: string) {
   return await prisma.task.findFirst({
-    where: { id },
+    where: { id, column: { board: { userId } } },
     select: {
       id: true,
       title: true,
