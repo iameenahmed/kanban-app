@@ -1,7 +1,3 @@
-/**
- * Shared types for the boards feature
- */
-
 export type Column = {
   id?: string;
   title: string;
@@ -19,4 +15,3 @@ export type BoardWithColumns = {
   userId: string;
   columns: Column[];
 };
-

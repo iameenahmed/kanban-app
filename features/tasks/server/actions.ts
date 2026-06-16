@@ -117,6 +117,25 @@ export const updateTaskColumn = async (taskId: string, columnId: string) => {
   return { success: true };
 };
 
+export const reorderTasks = async (
+  boardSlug: string,
+  columns: { columnId: string; taskIds: string[] }[],
+) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  if (!boardSlug || !columns.length) return { error: "Invalid Data" };
+
+  try {
+    await Repo.reorderTasks(user.id, boardSlug, columns);
+  } catch (e) {
+    console.error(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  return { success: true };
+};
+
 export const deleteTask = async (taskId: string) => {
   const user = await getCurrentUser();
   if (!user) return { error: "Unauthorized" };

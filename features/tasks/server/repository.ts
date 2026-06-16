@@ -155,10 +155,51 @@ export async function updateTaskColumn(
   userId: string,
   columnId: string,
 ) {
-  return await prisma.task.updateMany({
-    where: { id, column: { board: { userId } } },
-    data: { columnId },
+  return prisma.$transaction(async (tx) => {
+    const task = await tx.task.findFirst({
+      where: { id, column: { board: { userId } } },
+      select: { columnId: true, column: { select: { boardId: true } } },
+    });
+
+    if (!task || task.columnId === columnId) return { count: 0 };
+
+    const targetColumn = await tx.column.findFirst({
+      where: { id: columnId, boardId: task.column.boardId },
+      select: { id: true },
+    });
+
+    if (!targetColumn) return { count: 0 };
+
+    const maxPos = await tx.task.aggregate({
+      where: { columnId },
+      _max: { position: true },
+    });
+
+    return tx.task.updateMany({
+      where: { id },
+      data: { columnId, position: (maxPos._max.position ?? -1) + 1 },
+    });
   });
+}
+
+export async function reorderTasks(
+  userId: string,
+  boardSlug: string,
+  columns: { columnId: string; taskIds: string[] }[],
+) {
+  const updates = columns.flatMap(({ columnId, taskIds }) =>
+    taskIds.map((taskId, position) =>
+      prisma.task.updateMany({
+        where: {
+          id: taskId,
+          column: { board: { userId, slug: boardSlug } },
+        },
+        data: { columnId, position },
+      }),
+    ),
+  );
+
+  return prisma.$transaction(updates);
 }
 
 export async function deleteTask(id: string, userId: string) {

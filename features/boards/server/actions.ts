@@ -85,6 +85,26 @@ export const editBoard = async (
   return { success: true, slug };
 };
 
+export const reorderColumns = async (
+  boardSlug: string,
+  columnIds: string[],
+) => {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
+  if (!boardSlug || !columnIds.length) return { error: "Invalid Data" };
+
+  try {
+    await Repo.reorderColumns(user.id, boardSlug, columnIds);
+  } catch (e) {
+    console.error(e);
+    return { error: "Database failure. Please try again." };
+  }
+
+  revalidatePath(`/boards/${boardSlug}`);
+  return { success: true };
+};
+
 export const deleteBoardBySlug = async (slug: string) => {
   const user = await getCurrentUser();
   if (!user) return { error: "Unauthorized" };

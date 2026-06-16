@@ -99,6 +99,21 @@ export async function updateBoard(
   });
 }
 
+export async function reorderColumns(
+  userId: string,
+  boardSlug: string,
+  columnIds: string[],
+) {
+  const updates = columnIds.map((columnId, position) =>
+    prisma.column.updateMany({
+      where: { id: columnId, board: { userId, slug: boardSlug } },
+      data: { position },
+    }),
+  );
+
+  return prisma.$transaction(updates);
+}
+
 export async function deleteBoard(userId: string, slug: string) {
   return await prisma.board.delete({
     where: { userId_slug: { userId, slug } },
