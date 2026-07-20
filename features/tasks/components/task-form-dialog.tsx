@@ -56,7 +56,7 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
       title: task?.title || "",
       description: task?.description || "",
       subtasks: task?.subtasks || [{ title: "" }],
-      columnId: columns[0]?.id || "",
+      columnId: task?.columnId || columns[0]?.id || "",
     },
   });
 
