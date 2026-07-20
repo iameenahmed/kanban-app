@@ -1,15 +1,22 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { BoardHeader } from "@/features/boards/components/board-header";
 import { CustomSidebarTrigger } from "@/components/layout/custom-sidebar-trigger";
+import { getCurrentUser } from "@/features/auth/actions";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/signin");
+  }
+
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
