@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { MoreVerticalIcon } from "lucide-react";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { useRouter, useParams } from 'next/navigation';
+import { MoreVerticalIcon } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -10,7 +11,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -20,12 +21,10 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
-import { deleteTask } from "../server/actions";
-
-import { toast } from "sonner";
+import { deleteTask } from '../server/actions';
 
 export const TaskActionMenu = ({
   setError,
@@ -49,7 +48,7 @@ export const TaskActionMenu = ({
       setError(res.error);
     }
     if (res.success) {
-      toast.success("Task deleted successfully");
+      toast.success('Task deleted successfully');
       router.push(`/boards/${slug}`);
       router.refresh();
     }

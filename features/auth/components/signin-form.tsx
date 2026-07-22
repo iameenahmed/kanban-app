@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,8 +28,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 
 import { SignInFormSchema, SignInForm } from '../schema';
-
-import { toast } from 'sonner';
 
 export const SigninForm = () => {
   const [error, setError] = useState<string | undefined>();

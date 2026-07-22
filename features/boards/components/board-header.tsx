@@ -1,33 +1,32 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { PlusIcon, ChevronDown } from "lucide-react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { usePathname, useRouter } from 'next/navigation';
+import { PlusIcon, ChevronDown } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
+import { Button } from '@/components/ui/button';
+import { useSidebar } from '@/components/ui/sidebar';
 
-import { slugToName } from "../utils";
-import { deleteBoardBySlug } from "../server/actions";
-import { BoardActionMenu } from "@/features/boards/components/board-action-menu";
-
-import { toast } from "sonner";
+import { slugToName } from '../utils';
+import { deleteBoardBySlug } from '../server/actions';
+import { BoardActionMenu } from '@/features/boards/components/board-action-menu';
 
 export const BoardHeader = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const segment = pathname.split("/")[2];
-  const selectedBoard = segment === "new" ? " " : slugToName(segment || "");
+  const segment = pathname.split('/')[2];
+  const selectedBoard = segment === 'new' ? ' ' : slugToName(segment || '');
 
   const { isMobile, toggleSidebar } = useSidebar();
 
   const handleDelete = async () => {
-    const slug = segment === "new" ? " " : segment;
+    const slug = segment === 'new' ? ' ' : segment;
     const res = await deleteBoardBySlug(slug);
     if (res.success) {
-      toast.success("Board deleted successfully");
-      router.push("/boards");
+      toast.success('Board deleted successfully');
+      router.push('/boards');
     }
   };
 

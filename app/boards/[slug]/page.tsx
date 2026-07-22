@@ -1,5 +1,5 @@
-import { Columns } from "@/features/tasks/components/columns";
-import { fetchColumnsWithTasks } from "@/features/tasks/server/actions";
+import { Columns } from '@/features/tasks/components/columns';
+import { fetchColumnsWithTasks } from '@/features/tasks/server/actions';
 
 type BoardPageProps = {
   params: Promise<{ slug: string }>;

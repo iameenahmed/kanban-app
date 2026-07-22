@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -29,8 +30,6 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 
 import { SignUpFormSchema, SignUpForm } from '../schema';
 
-import { toast } from 'sonner';
-
 export const SignupForm = () => {
   const router = useRouter();
   const [error, setError] = useState<string | undefined>();
@@ -58,7 +57,7 @@ export const SignupForm = () => {
           router.push('/');
         },
         onError: (ctx) => setError(ctx.error.message),
-      }
+      },
     );
   };
 
@@ -133,7 +132,7 @@ export const SignupForm = () => {
                 )}
               />
 
-              <p className="text-sm text-medium-grey">
+              <p className="text-medium-grey text-sm">
                 Must be at least 8 characters long.
               </p>
 
@@ -156,7 +155,7 @@ export const SignupForm = () => {
           </Form>
         </CardContent>
       </Card>
-      <p className="px-6 text-center text-sm text-medium-grey">
+      <p className="text-medium-grey px-6 text-center text-sm">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{' '}
         and <a href="#">Privacy Policy</a>.
       </p>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PanelsLeftBottom, PlusIcon } from "lucide-react";
@@ -12,13 +13,17 @@ import {
 } from "@/components/ui/sidebar";
 
 import { BoardsList } from "@/features/boards/components/boards-list";
+import { BoardsListSkeleton } from "@/features/boards/components/boards-list-skeleton";
 import { fetchBoards } from "@/features/boards/server/actions";
 import { ThemeToggle } from "./theme-toggle";
 
-export const AppSidebar = async () => {
+const AsyncBoardsList = async () => {
   const result = await fetchBoards();
   const boards = result.error ? [] : result.data || [];
+  return <BoardsList boards={boards} />;
+};
 
+export const AppSidebar = () => {
   return (
     <Sidebar>
       <SidebarHeader className="p-6">
@@ -38,7 +43,9 @@ export const AppSidebar = async () => {
         />
       </SidebarHeader>
       <SidebarContent className="pt-4">
-        <BoardsList boards={boards} />
+        <Suspense fallback={<BoardsListSkeleton />}>
+          <AsyncBoardsList />
+        </Suspense>
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild

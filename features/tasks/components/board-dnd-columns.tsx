@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
-import { TriangleAlertIcon, PlusIcon } from "lucide-react";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { reorderColumns } from "@/features/boards/server/actions";
-import { reorderTasks } from "../server/actions";
-import { ColumnItem } from "./column-item";
-import { reorderList, moveTask, getChangedColumns } from "../utils";
-import { type BoardColumn } from "../types";
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { DragDropContext, Droppable, type DropResult } from '@hello-pangea/dnd';
+import { TriangleAlertIcon, PlusIcon } from 'lucide-react';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { reorderColumns } from '@/features/boards/server/actions';
+import { reorderTasks } from '../server/actions';
+import { ColumnItem } from './column-item';
+import { reorderList, moveTask, getChangedColumns } from '../utils';
+import { type BoardColumn } from '../types';
 
 export const BoardDndColumns = ({
   columns,
@@ -39,7 +39,7 @@ export const BoardDndColumns = ({
     setError(undefined);
     const previousItems = items;
 
-    if (type === "column") {
+    if (type === 'column') {
       const nextItems = reorderList(items, source.index, destination.index);
       setItems(nextItems);
       const res = await reorderColumns(
