@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { PlusIcon, TriangleAlertIcon, XIcon } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import {
   Dialog,
@@ -81,6 +82,9 @@ export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
       return;
     }
 
+    toast.success(
+      isEditing ? 'Board updated successfully' : 'Board created successfully'
+    );
     handleClose(res?.slug);
     router.refresh();
   };

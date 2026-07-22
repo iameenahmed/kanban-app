@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { PlusIcon, TriangleAlertIcon, XIcon } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import {
   Dialog,
@@ -83,6 +84,9 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
       setError(res.error);
     }
     if (res.success) {
+      toast.success(
+        isEditing ? 'Task updated successfully' : 'Task created successfully'
+      );
       router.refresh();
       handleClose();
     }

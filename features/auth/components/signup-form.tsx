@@ -29,6 +29,8 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 
 import { SignUpFormSchema, SignUpForm } from '../schema';
 
+import { toast } from 'sonner';
+
 export const SignupForm = () => {
   const router = useRouter();
   const [error, setError] = useState<string | undefined>();
@@ -51,7 +53,10 @@ export const SignupForm = () => {
     await authClient.signUp.email(
       { name, email, password, callbackURL: '/' },
       {
-        onSuccess: () => router.push('/'),
+        onSuccess: () => {
+          toast.success('Account created successfully');
+          router.push('/');
+        },
         onError: (ctx) => setError(ctx.error.message),
       }
     );

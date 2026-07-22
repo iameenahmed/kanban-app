@@ -28,6 +28,8 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 
 import { SignInFormSchema, SignInForm } from '../schema';
 
+import { toast } from 'sonner';
+
 export const SigninForm = () => {
   const [error, setError] = useState<string | undefined>();
 
@@ -49,6 +51,8 @@ export const SigninForm = () => {
 
     if (res.error) {
       setError(res.error.message);
+    } else {
+      toast.success('Login Successful');
     }
   };
 

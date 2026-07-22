@@ -12,6 +12,8 @@ import { slugToName } from "../utils";
 import { deleteBoardBySlug } from "../server/actions";
 import { BoardActionMenu } from "@/features/boards/components/board-action-menu";
 
+import { toast } from "sonner";
+
 export const BoardHeader = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -24,6 +26,7 @@ export const BoardHeader = () => {
     const slug = segment === "new" ? " " : segment;
     const res = await deleteBoardBySlug(slug);
     if (res.success) {
+      toast.success("Board deleted successfully");
       router.push("/boards");
     }
   };

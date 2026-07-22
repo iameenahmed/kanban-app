@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 
 import { deleteTask } from "../server/actions";
 
+import { toast } from "sonner";
+
 export const TaskActionMenu = ({
   setError,
   taskId,
@@ -47,6 +49,7 @@ export const TaskActionMenu = ({
       setError(res.error);
     }
     if (res.success) {
+      toast.success("Task deleted successfully");
       router.push(`/boards/${slug}`);
       router.refresh();
     }
