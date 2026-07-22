@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { MoreVerticalIcon } from "lucide-react";
 
 import {
@@ -27,29 +27,28 @@ import { deleteTask } from "../server/actions";
 
 export const TaskActionMenu = ({
   setError,
+  taskId,
 }: {
   setError: (error: string) => void;
+  taskId: string;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>();
-
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const params = useParams();
+  const slug = params.slug as string;
 
   const onEdit = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("edit", "1");
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`/boards/${slug}/tasks/${taskId}/edit`);
   };
 
   const onDelete = async () => {
-    const taskId = searchParams.get("task");
-    const res = await deleteTask(taskId!);
+    const res = await deleteTask(taskId);
     if (res.error) {
       setError(res.error);
     }
     if (res.success) {
-      router.back();
+      router.push(`/boards/${slug}`);
+      router.refresh();
     }
   };
 

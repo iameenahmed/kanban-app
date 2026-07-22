@@ -41,7 +41,7 @@ export const TaskList = ({
                     {...draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <Link href={`/boards/${slug}?task=${task.id}`}>
+                    <Link href={`/boards/${slug}/tasks/${task.id}`}>
                       <Card className="group cursor-grab border-none active:cursor-grabbing">
                         <CardHeader className="px-4">
                           <CardTitle className="group-hover:text-purple text-[15px] leading-5">

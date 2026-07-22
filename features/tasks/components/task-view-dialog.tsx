@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { TriangleAlertIcon } from "lucide-react";
+import { useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { TriangleAlertIcon } from 'lucide-react';
 
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -18,24 +18,24 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Field,
   FieldGroup,
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@/components/ui/field";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+} from '@/components/ui/field';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 
-import { TaskActionMenu } from "./task-action-menu";
-import { TaskWithSubtasks, Column } from "../types";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { TaskActionMenu } from './task-action-menu';
+import { TaskWithSubtasks, Column } from '../types';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 import {
   updateSubtaskCompletionStatus,
   updateTaskColumn,
-} from "../server/actions";
+} from '../server/actions';
 
 type TaskDialogProps = {
   task: TaskWithSubtasks;
@@ -44,7 +44,16 @@ type TaskDialogProps = {
 
 export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
   const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
+
+  const [open, setOpen] = useState(true);
   const [error, setError] = useState<string | undefined>();
+
+  const handleClose = () => {
+    setOpen(false);
+    router.push(`/boards/${slug}`);
+  };
 
   const handleCheckedChange = async (
     subtaskId: string,
@@ -70,10 +79,15 @@ export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
   };
 
   return (
-    <Dialog open onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) handleClose();
+      }}
+    >
       <DialogContent className="border-0 p-8" showCloseButton={false}>
         <div className="absolute top-6 right-4">
-          <TaskActionMenu setError={setError} />
+          <TaskActionMenu setError={setError} taskId={task.id!} />
         </div>
         <DialogHeader>
           <DialogTitle className="w-8/10 text-lg">{task?.title}</DialogTitle>
@@ -109,8 +123,8 @@ export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
                       htmlFor={id}
                       className={cn(
                         isCompleted
-                          ? "text-medium-grey line-through"
-                          : "text-sm font-bold text-black dark:text-white",
+                          ? 'text-medium-grey line-through'
+                          : 'text-sm font-bold text-black dark:text-white',
                       )}
                     >
                       {title}

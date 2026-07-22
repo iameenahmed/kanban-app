@@ -15,5 +15,5 @@ export default async function EditBoardPage({ params }: EditBoardPageProps) {
     redirect('/boards');
   }
 
-  return <BoardDialog isEditing={true} board={result.data} />;
+  return <BoardDialog isEditing board={result.data} />;
 }

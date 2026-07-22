@@ -9,8 +9,10 @@ import { getCurrentUser } from "@/features/auth/actions";
 
 export default async function DashboardLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const user = await getCurrentUser();
   if (!user) {
@@ -30,6 +32,7 @@ export default async function DashboardLayout({
       <div className="bg-light-grey dark:bg-very-dark-grey flex min-w-0 flex-1 flex-col">
         <BoardHeader />
         {children}
+        {modal}
       </div>
     </SidebarProvider>
   );

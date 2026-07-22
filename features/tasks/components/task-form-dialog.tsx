@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { PlusIcon, TriangleAlertIcon, XIcon } from "lucide-react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { PlusIcon, TriangleAlertIcon, XIcon } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormField,
@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -27,18 +27,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 
-import { TaskFormSchema, TaskFormSchemaTypes } from "../schema";
-import { TaskWithSubtasks, Column } from "../types";
+import { TaskFormSchema, TaskFormSchemaTypes } from '../schema';
+import { TaskWithSubtasks, Column } from '../types';
 import {
   createTaskWithSubtasks,
   editTaskWithSubtasks,
-} from "../server/actions";
+} from '../server/actions';
 
 type TaskFormProps = {
   isEditing: boolean;
@@ -48,21 +48,30 @@ type TaskFormProps = {
 
 export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
   const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
+
+  const [open, setOpen] = useState(true);
   const [error, setError] = useState<string | undefined>();
+
+  const handleClose = () => {
+    setOpen(false);
+    router.push(`/boards/${slug}`);
+  };
 
   const form = useForm<TaskFormSchemaTypes>({
     resolver: zodResolver(TaskFormSchema),
     defaultValues: {
-      title: task?.title || "",
-      description: task?.description || "",
-      subtasks: task?.subtasks || [{ title: "" }],
-      columnId: task?.columnId || columns[0]?.id || "",
+      title: task?.title || '',
+      description: task?.description || '',
+      subtasks: task?.subtasks || [{ title: '' }],
+      columnId: task?.columnId || columns[0]?.id || '',
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "subtasks",
+    name: 'subtasks',
   });
 
   const onSubmit = async (values: TaskFormSchemaTypes) => {
@@ -74,16 +83,21 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
       setError(res.error);
     }
     if (res.success) {
-      router.back();
       router.refresh();
+      handleClose();
     }
   };
 
   return (
-    <Dialog open onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) handleClose();
+      }}
+    >
       <DialogContent className="gap-y-6 border-0" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Task" : "Add New Task"}</DialogTitle>
+          <DialogTitle>{isEditing ? 'Edit Task' : 'Add New Task'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -165,7 +179,7 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
             <Button
               variant="secondary"
               className="w-full rounded-full text-sm font-bold"
-              onClick={() => append({ title: "" })}
+              onClick={() => append({ title: '' })}
             >
               <PlusIcon className="size-4" />
               Add New SubTask
@@ -212,7 +226,7 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
             )}
 
             <Button type="submit" className="w-full rounded-full">
-              {isEditing ? "Save Changes" : "Create New Task"}
+              {isEditing ? 'Save Changes' : 'Create New Task'}
             </Button>
           </form>
         </Form>

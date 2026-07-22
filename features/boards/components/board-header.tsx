@@ -54,7 +54,7 @@ export const BoardHeader = () => {
           className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41"
           asChild
         >
-          <Link href={`/boards/${segment}?task=new`}>
+          <Link href={`/boards/${segment}/tasks/new`}>
             <PlusIcon />
             <span className="hidden md:block">Add New Task</span>
           </Link>
