@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DragDropContext, Droppable, type DropResult } from '@hello-pangea/dnd';
-import { TriangleAlertIcon, PlusIcon } from 'lucide-react';
-import { Alert, AlertTitle } from '@/components/ui/alert';
+import { PlusIcon } from 'lucide-react';
+
 import { reorderColumns } from '@/features/boards/server/actions';
 import { reorderTasks } from '../server/actions';
 import { ColumnItem } from './column-item';
@@ -21,7 +22,6 @@ export const BoardDndColumns = ({
 }) => {
   const router = useRouter();
   const [items, setItems] = useState(columns);
-  const [error, setError] = useState<string | undefined>();
 
   const handleDragEnd = async ({
     destination,
@@ -36,7 +36,6 @@ export const BoardDndColumns = ({
     )
       return;
 
-    setError(undefined);
     const previousItems = items;
 
     if (type === 'column') {
@@ -47,7 +46,7 @@ export const BoardDndColumns = ({
         nextItems.map((c) => c.id),
       );
       if (res.error) {
-        setError(res.error);
+        toast.error(res.error);
         setItems(previousItems);
         router.refresh();
       }
@@ -60,7 +59,7 @@ export const BoardDndColumns = ({
     if (changedColumns.length) {
       const res = await reorderTasks(slug, changedColumns);
       if (res.error) {
-        setError(res.error);
+        toast.error(res.error);
         setItems(previousItems);
       }
     }
@@ -69,12 +68,6 @@ export const BoardDndColumns = ({
 
   return (
     <div className="min-w-0 flex-1 overflow-auto p-6">
-      {!!error && (
-        <Alert variant="destructive" className="mb-4 w-70">
-          <TriangleAlertIcon />
-          <AlertTitle>{error}</AlertTitle>
-        </Alert>
-      )}
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable
           droppableId="board-columns"
