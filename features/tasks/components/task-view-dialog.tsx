@@ -63,18 +63,12 @@ export const TaskViewDialog = ({ task, columns }: TaskDialogProps) => {
     if (res.error) {
       setError(res.error);
     }
-    if (res.success) {
-      router.refresh();
-    }
   };
 
   const handleColumnChange = async (taskId: string, columnId: string) => {
     const res = await updateTaskColumn(taskId, columnId);
     if (res.error) {
       setError(res.error);
-    }
-    if (res.success) {
-      router.refresh();
     }
   };
 

@@ -49,8 +49,6 @@ export const TaskActionMenu = ({
     }
     if (res.success) {
       toast.success('Task deleted successfully');
-      router.push(`/boards/${slug}`);
-      router.refresh();
     }
   };
 

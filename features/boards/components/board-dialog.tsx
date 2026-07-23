@@ -83,10 +83,9 @@ export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
     }
 
     toast.success(
-      isEditing ? 'Board updated successfully' : 'Board created successfully'
+      isEditing ? 'Board updated successfully' : 'Board created successfully',
     );
     handleClose(res?.slug);
-    router.refresh();
   };
 
   return (

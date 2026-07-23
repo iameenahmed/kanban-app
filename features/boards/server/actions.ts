@@ -37,7 +37,7 @@ export const createBoard = async (values: BoardFormSchemaTypes) => {
     return { error: 'Database failure. Please try again.' };
   }
 
-  revalidatePath('/boards');
+  revalidatePath('/boards', 'layout');
   return { success: true, slug };
 };
 
@@ -57,7 +57,9 @@ export const fetchBoardBySlug = async (slug: string) => {
   }
 };
 
-export const editBoard = async (values: { board_id: string } & BoardFormSchemaTypes) => {
+export const editBoard = async (
+  values: { board_id: string } & BoardFormSchemaTypes,
+) => {
   const user = await getCurrentUser();
   if (!user) return { error: 'Unauthorized' };
 
@@ -67,17 +69,26 @@ export const editBoard = async (values: { board_id: string } & BoardFormSchemaTy
   const slug = nameToSlug(values.board_name);
 
   try {
-    await Repo.updateBoard(values.board_id, user.id, result.data.board_name, slug, result.data.columns);
+    await Repo.updateBoard(
+      values.board_id,
+      user.id,
+      result.data.board_name,
+      slug,
+      result.data.columns,
+    );
   } catch (e) {
     console.error(e);
     return { error: 'Database failure. Please try again.' };
   }
 
-  revalidatePath(`/boards/${slug}`);
+  revalidatePath('/boards', 'layout');
   return { success: true, slug };
 };
 
-export const reorderColumns = async (boardSlug: string, columnIds: string[]) => {
+export const reorderColumns = async (
+  boardSlug: string,
+  columnIds: string[],
+) => {
   const user = await getCurrentUser();
   if (!user) return { error: 'Unauthorized' };
 
@@ -105,6 +116,6 @@ export const deleteBoardBySlug = async (slug: string) => {
     return { error: 'Database failure. Please try again.' };
   }
 
-  revalidatePath('/boards');
+  revalidatePath('/boards', 'layout');
   return { success: true };
 };

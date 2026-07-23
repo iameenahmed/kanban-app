@@ -85,9 +85,8 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
     }
     if (res.success) {
       toast.success(
-        isEditing ? 'Task updated successfully' : 'Task created successfully'
+        isEditing ? 'Task updated successfully' : 'Task created successfully',
       );
-      router.refresh();
       handleClose();
     }
   };

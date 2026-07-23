@@ -1,9 +1,10 @@
-"use server";
+'use server';
 
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { cache } from 'react';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = cache(async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session || !session.user) {
@@ -11,4 +12,4 @@ export const getCurrentUser = async () => {
   }
 
   return session.user;
-};
+});
