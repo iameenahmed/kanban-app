@@ -52,15 +52,17 @@ export const BoardHeader = () => {
         </button>
       </div>
       <div className="flex items-center md:gap-3">
-        <Button
-          className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41"
-          asChild
-        >
-          <Link href={`/boards/${segment}/tasks/new`}>
-            <PlusIcon />
-            <span className="hidden md:block">Add New Task</span>
-          </Link>
-        </Button>
+        {selectedBoard && (
+          <Button
+            className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41"
+            asChild
+          >
+            <Link href={`/boards/${segment}/tasks/new`}>
+              <PlusIcon />
+              <span className="hidden md:block">Add New Task</span>
+            </Link>
+          </Button>
+        )}
         <BoardActionMenu
           selectedBoard={selectedBoard}
           onDelete={handleDelete}
