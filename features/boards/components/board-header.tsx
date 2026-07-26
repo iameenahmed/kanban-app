@@ -12,6 +12,7 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { slugToName } from '../utils';
 import { deleteBoardBySlug } from '../server/actions';
 import { BoardActionMenu } from '@/features/boards/components/board-action-menu';
+import { UserAvatarMenu } from '@/features/auth/components/user-avatar-menu';
 
 export const BoardHeader = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ export const BoardHeader = () => {
           <ChevronDown className="text-purple size-4 font-bold md:hidden" />
         </button>
       </div>
-      <div className="flex items-center md:gap-3">
+      <div className="flex items-center gap-2 md:gap-4">
         {selectedBoard && (
           <Button
             className="h-8 w-12 rounded-full font-bold md:h-12 md:w-41"
@@ -68,6 +69,7 @@ export const BoardHeader = () => {
           onDelete={handleDelete}
           onEdit={() => router.push(`/boards/${segment}/edit`)}
         />
+        <UserAvatarMenu />
       </div>
     </div>
   );
