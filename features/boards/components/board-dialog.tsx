@@ -157,6 +157,7 @@ export const BoardDialog = ({ isEditing = false, board }: BoardDialogProps) => {
 
             <div className="flex w-full flex-col gap-y-6">
               <Button
+                type="button"
                 variant="secondary"
                 className="rounded-full text-sm font-bold"
                 onClick={() => append({ title: '' })}

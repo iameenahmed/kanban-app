@@ -180,6 +180,7 @@ export const TaskFormDialog = ({ isEditing, task, columns }: TaskFormProps) => {
             </div>
 
             <Button
+              type="button"
               variant="secondary"
               className="w-full rounded-full text-sm font-bold"
               onClick={() => append({ title: '' })}
