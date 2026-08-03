@@ -24,7 +24,7 @@ A full-stack, modern Kanban task management application built with **Next.js 16*
 - **Library**: [React 19](https://react.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Components & UI**: [Radix UI Primitives](https://www.radix-ui.com/), [Lucide React](https://lucide.dev/)
+- **Components & UI**: [Shadcn/ui](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
 - **Drag & Drop**: [`@hello-pangea/dnd`](https://github.com/hello-pangea/dnd)
 - **Forms & Validation**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/)
 - **Notifications**: [Sonner](https://sonner.emilkowal.si/)
